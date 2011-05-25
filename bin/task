@@ -1,0 +1,154 @@
+#!/bin/sh 
+
+usage() {
+    echo "list tasks:"
+    echo "    `basename $0`"
+    echo "    `basename $0` l|list [search term]"
+    echo
+    echo "complete task:"
+    echo "    `basename $0` m|mark [task-id]"
+    echo
+    echo "create task:"
+    echo "    `basename $0` n|new <task text>"
+    echo 
+    echo "order tasks:"
+    echo "    `basename $0` o|order"
+    echo
+    echo "prioritise task:"
+    echo "    `basename $0` p|prioritise [task-id]"
+    echo
+    echo "history:"
+    echo "    `basename $0` h|history [search term]"
+    echo
+    echo "version:"
+    echo "    `basename $0` v|version|-V|--version"
+}
+
+
+VERSION=0.1
+: ${TASK_FILE:=.task}
+: ${TASK_FILE_HISTORY:=${TASK_FILE}.done}
+: ${EDITOR:=vi}
+
+empty()  {
+    [ ! -f "$TASK_FILE" ]
+}
+
+list() {
+    if empty; then
+        echo "No tasks found."
+        return 0
+    fi
+    case $# in
+    0) cat "$TASK_FILE" ;;
+    *) grep "$*" "$TASK_FILE" ;;
+    esac
+}
+
+mark() {
+    if empty; then
+        echo "No tasks found."
+        return 1
+    fi
+    case $# in
+    0) 
+        task=`head -n 1 $TASK_FILE`
+        rest=`tail -n +2 $TASK_FILE`
+        tmp=`mktemp -t task`
+        echo $task >> $TASK_FILE_HISTORY
+        tail -n +2 $TASK_FILE  | sed -e '/^[ \t]*$/d'| sed -e '/^$/d' > "$tmp"
+        mv "$tmp" "$TASK_FILE"
+        ;;
+    1) 
+        prioritise $1
+        mark
+        ;;
+    *)
+        echo "Too many arguments [$#] for mark command." 1>&2
+        usage 1>&2
+        exit 1
+    esac
+}
+
+new() {
+    tmp=`mktemp -t task`
+    (
+        echo "$@"
+        empty || cat "$TASK_FILE"
+    ) | sed -e '/^[ \t]*$/d'| sed -e '/^$/d' > "$tmp"
+    mv "$tmp" "$TASK_FILE"
+    list
+}
+
+order() {
+    if empty; then
+        echo "No tasks found."
+        return 1
+    else
+        $EDITOR "$TASK_FILE"
+    fi
+    list
+}
+
+prioritise() {
+    if empty; then
+        echo "No tasks found."
+        return 1
+    fi
+    if [ $# -ne 1 ]; then
+       echo "Incorrect number of arguments ($#) for prioritise command." 1>&2
+       usage 1>&2
+       exit 1
+    fi
+    task_id=$1
+    task_count=`cat $TASK_FILE | wc -l | sed -e 's/ //g'`
+    if [ $task_id -gt $task_count ]; then
+        echo "invalid task id [$task_id]" 1>&2
+        exit 10
+    fi
+    task=`sed -n ${task_id}p "$TASK_FILE"`
+    tmp=`mktemp -t task`
+    (
+        echo $task
+        sed -e ${task_id}d "$TASK_FILE"
+    ) | sed -e '/^[ \t]*$/d'| sed -e '/^$/d' > "$tmp"
+    mv "$tmp" "$TASK_FILE"
+    list
+}
+
+history() {
+    if [ ! -f "$TASK_FILE_HISTORY" ]; then
+        echo "No tasks completed."
+        return 0
+    fi
+    case $# in
+    0) cat "$TASK_FILE_HISTORY" ;;
+    *) grep "$*" "$TASK_FILE_HISTORY" ;;
+    esac
+}
+
+version() {
+    echo "task version $VERSION"
+}
+
+if [ $# -eq 0 ]; then
+    command=list
+else
+    command="$1"; shift
+fi
+
+case "$command" in 
+l|list) list "$@" ;;
+m|mark) mark "$@" ;;
+n|new) new "$@" ;;
+o|order) order "$@" ;;
+p|prioritise) prioritise "$@" ;;
+h|history) history "$@" ;;
+v|version|-V|--version) version ;;
+*)
+    echo "invalid command [$command]." 1>&2
+    usage 1>&2
+    exit 1
+esac
+
+

@@ -1,26 +1,71 @@
 NAME
-        x - cli task management
+        task - simple task management
+
+SYNOPSIS
+        list tasks:
+            task
+            task l|list [search term]
+
+        complete task:
+            task m|mark [task-id]
+
+        create task:
+            task n|new <task text>
+
+        order tasks in editor:
+            task o|order
+
+        prioritise task:
+            task p|prioritise [task-id]
+ 
+        history:
+            task h|history [search term]
+
+        version:
+            task v|version|-V|--version
+        
 
 DESCRIPTION
-	t.b.c.
+	Simple management cli for tracking tasks. 
 
-USAGE
-	t.b.c.
+        This interface wraps a file using the simplest possible format
+        where each task is represented as a single line of text in
+        the file.
+
+        Each task has an id of its line number in the file.
+
+        Task ids are ephemeral, so as tasks are completed, added or
+        prioritised the id will change. The id is primarily for interactive
+        use.
+
+        By default the file is stored as '.task' in your current directory.
+        This default can be overridden with the TASK_FILE variable.
+
+             TASK_FILE=~/.task task l
+
+        It is standard practice to utilise two aliases for task. One 
+        representing a task file in your current directory, and one representing 
+        a global task file in your home directory. The current convention for 
+        these aliases is `x` for the local instance of task, and `xx` for the 
+        global instance of task.
+
+                alias x=task    
+                alias xx="TASK_FILE=$HOME/.task x"
 
 STATE
-        t.b.c.
+        The tool is stable and in use. No major changes are expected.
 
 LIMITATIONS
-        t.b.c.
+        The tool is intentionally limited. Less yaks, more action.
 
 AUTHOR
         Mark Hibberd <mark@hibberd.id.au>
 
 NOTES
         1. official repository
-           https://github.com/markhibberd/x
+           https://github.com/markhibberd/task
         2. site and documentation
-           http://x.mth.io
+           http://task.mth.io
         3. license (3 point BSD style)
-           https://github.com/markhibberd/x/blob/master/LICENSE
+           https://github.com/markhibberd/task/blob/master/LICENSE
 
