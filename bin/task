@@ -1,4 +1,10 @@
 #!/bin/sh 
+#
+# Task, a simple mangagment cli for tracking tasks.
+#
+# http://task.mth.io
+# https://github.com/markhibberd/task
+#
 
 usage() {
     echo "list tasks:"
@@ -15,7 +21,7 @@ usage() {
     echo "    `basename $0` o|order"
     echo
     echo "prioritise task:"
-    echo "    `basename $0` p|prioritise [task-id]"
+    echo "    `basename $0` p|prioritise task-id"
     echo
     echo "history:"
     echo "    `basename $0` h|history [search term]"

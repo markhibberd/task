@@ -16,7 +16,7 @@ SYNOPSIS
             task o|order
 
         prioritise task:
-            task p|prioritise [task-id]
+            task p|prioritise task-id
  
         history:
             task h|history [search term]
