@@ -31,7 +31,7 @@ usage() {
 }
 
 
-VERSION=0.1
+VERSION=0.3
 : ${TASK_FILE:=.task}
 : ${TASK_FILE_HISTORY:=${TASK_FILE}.done}
 : ${EDITOR:=vi}
@@ -46,8 +46,8 @@ list() {
         return 0
     fi
     case $# in
-    0) cat "$TASK_FILE" ;;
-    *) grep "$*" "$TASK_FILE" ;;
+    0) cat "$TASK_FILE" | nl ;;
+    *) grep "$*" "$TASK_FILE" | nl ;;
     esac
 }
 
@@ -74,6 +74,7 @@ mark() {
         usage 1>&2
         exit 1
     esac
+    list
 }
 
 new() {
@@ -151,6 +152,7 @@ o|order) order "$@" ;;
 p|prioritise) prioritise "$@" ;;
 h|history) history "$@" ;;
 v|version|-V|--version) version ;;
+?|help) usage ;;
 *)
     echo "invalid command [$command]." 1>&2
     usage 1>&2
