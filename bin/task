@@ -31,7 +31,7 @@ usage() {
 }
 
 
-VERSION=0.3
+VERSION=0.4
 : ${TASK_FILE:=.task}
 : ${TASK_FILE_HISTORY:=${TASK_FILE}.done}
 : ${EDITOR:=vi}
@@ -60,7 +60,7 @@ mark() {
     0) 
         task=`head -n 1 $TASK_FILE`
         rest=`tail -n +2 $TASK_FILE`
-        tmp=`mktemp -t task`
+        tmp=`mktemp -t task.XXXXXXXX`
         echo $task >> $TASK_FILE_HISTORY
         tail -n +2 $TASK_FILE  | sed -e '/^[ \t]*$/d'| sed -e '/^$/d' > "$tmp"
         mv "$tmp" "$TASK_FILE"
@@ -78,7 +78,7 @@ mark() {
 }
 
 new() {
-    tmp=`mktemp -t task`
+    tmp=`mktemp -t task.XXXXXXXX`
     (
         echo "$@"
         empty || cat "$TASK_FILE"
@@ -114,7 +114,7 @@ prioritise() {
         exit 10
     fi
     task=`sed -n ${task_id}p "$TASK_FILE"`
-    tmp=`mktemp -t task`
+    tmp=`mktemp -t task.XXXXXXXX`
     (
         echo $task
         sed -e ${task_id}d "$TASK_FILE"
