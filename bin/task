@@ -30,7 +30,7 @@ usage() {
     echo "    `basename $0` v|version|-V|--version"
     echo
     echo "help:"
-    echo "    `basename $0` ?|help|--help"
+    echo "    `basename $0` help|--help"
 }
 
 
@@ -155,7 +155,7 @@ o|order) order "$@" ;;
 p|prioritise) prioritise "$@" ;;
 h|history) history "$@" ;;
 v|version|-V|--version) version ;;
-?|help|--help) usage ;;
+help|--help) usage ;;
 *)
     echo "invalid command [$command]." 1>&2
     usage 1>&2
