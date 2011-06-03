@@ -1,5 +1,5 @@
 MODULE = task
-VERSION = 0.4
+VERSION = 0.5
 GEN = gen
 BIN = bin
 ETC = etc

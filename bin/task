@@ -28,10 +28,13 @@ usage() {
     echo
     echo "version:"
     echo "    `basename $0` v|version|-V|--version"
+    echo
+    echo "help:"
+    echo "    `basename $0` ?|help|--help"
 }
 
 
-VERSION=0.4
+VERSION=0.5
 : ${TASK_FILE:=.task}
 : ${TASK_FILE_HISTORY:=${TASK_FILE}.done}
 : ${EDITOR:=vi}
@@ -152,7 +155,7 @@ o|order) order "$@" ;;
 p|prioritise) prioritise "$@" ;;
 h|history) history "$@" ;;
 v|version|-V|--version) version ;;
-?|help) usage ;;
+?|help|--help) usage ;;
 *)
     echo "invalid command [$command]." 1>&2
     usage 1>&2
